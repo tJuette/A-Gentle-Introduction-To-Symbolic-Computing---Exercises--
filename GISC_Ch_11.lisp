@@ -47,8 +47,75 @@
     (dolist (element list reversed-list)
       (push element reversed-list))))
 
+;;11.9
+(defun check-all-odd (list)
+  (do ((lst list (rest lst)))
+      ((null lst) t)
+    (format t "Checking ~A...~%" (first lst))
+    (when (evenp (first lst)) (return nil))))
+
+;;11.10
+(defun launch (n)
+  (let ((counter n))
+    (dotimes (i n)
+      (format t "~A..." counter)
+      (when (equal counter 1)
+	(format t "Blast off!"))
+      (decf counter))))
+
+;;11.11
+(defun find-largest (list)
+  (let ((largest (first list)))
+    (do* ((lst list (rest lst))
+	  (next (first lst) (first lst)))
+	 ((null lst) largest)
+      (when (< largest next)
+	(setf largest next)))))
+
+;;11.12
+(defun power-of-2 (n)
+  (do ((result 1 (* result 2))
+       (counter n (- counter 1)))
+      ((zerop counter) result)))
+
+;;11.13
+(defun first-non-integer (list)
+  (dolist (elem list 'none)
+    (unless (integerp elem)
+      (return elem))))
+
+;;11.14
+;;An error like "unbound variable x", since it hasn't been initialized before e 
+
+(defun do-fact (n)
+  (do ((counter n (- counter 1))
+       (fact 1 (* counter fact)))
+      ((zerop counter) fact)))
+
+
+(defun do-length (list)
+  (do ((lst list (rest lst))
+       (counter 0 (+ counter 1)))
+      ((null lst) counter)))
+
+(defun do-find (elem list)
+  (do ((lst list (rest lst)))
+      ((null lst) nil)
+    (when (equal elem (first lst)) (return (first lst)))))
+
 (defun rec-reverse (list)
   (labels ((rev (l container)
 	     (cond ((null l) container)
 		   (t (rev (rest l) (cons (first l) container))))))
     (rev list '())))
+
+(defun it-fact (n)
+  (let ((prod 1))
+    (dotimes (i n prod)
+      (setf prod (* prod (+ i 1))))))
+
+(defun import-all nil
+  (load "GISC_Ch_11.lisp")
+  (load "dtrace.lisp")
+  (load "sdraw.lisp"))
+

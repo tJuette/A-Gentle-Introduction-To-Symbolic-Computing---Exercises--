@@ -233,7 +233,7 @@
   (setf (cdr list) (list el)))
 
 ;;10.11
-;;#x(a b c . #x)
+;;#x(a b c . #x) A circular list.
 
 ;;10.12
 ;;The first variant returns a new list (HI HO HI HO) but leaves H untouched, while the
