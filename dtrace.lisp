@@ -13,7 +13,6 @@
 ;;; User-level routines:
 ;;;   DTRACE  - same syntax as TRACE
 ;;;   DUNTRACE - same syntax as UNTRACE
-#lang 
 (defpackage :dtrace
   (:use :common-lisp)
   (:export dtrace duntrace
