@@ -75,6 +75,93 @@
       (record-value (random 11)))
     (print-histogram)))
 
+;;13.9
+(defvar crypto-text '("zj ze kljjls jf slapzi ezvlij pib kl jufwxuj p hffv jupi jf enlpo pib slafml pvv bfwkj"))
+
+;;a
+(defvar *encipher-table* (make-hash-table))
+(defvar *decipher-table* (make-hash-table))
+
+;;b
+(defun make-substitution (deci enci)
+  (setf (gethash deci *decipher-table*) enci)
+  (setf (gethash enci *encipher-table*) deci))
+
+;;c
+(defun undo-substitution (l)
+  (let ((enci (gethash l *decipher-table*)))
+    (setf (gethash l *decipher-table*) nil)
+    (setf (gethash enci *encipher-table*)  nil)))
+
+;;d
+(defun clear nil
+  (clrhash *decipher-table*)
+  (clrhash *encipher-table*))
+
+;;e
+(defun decipher-string (str)
+  (let* ((str-len (length str))
+	 (dec-str (make-string str-len :initial-element #\Space)))
+    (dotimes (i str-len)
+      (setf (aref dec-str i) (or (gethash (aref str i) *decipher-table*)
+				 #\Space)))
+    dec-str))
+
+;;f
+(defun show-line nil
+  (format t "~A~%" (car crypto-text))
+  (format t "~A~%" (decipher-string (car crypto-text))))
+
+;;g
+(defun show-text (text)
+  (let ((len (length (car crypto-text))))
+    (dotimes (i len) (format t "-"))
+    (format t "~%~%")
+    (show-line)
+    (format t "~%")
+    (dotimes (i len) (format t "-"))
+    (format t "~%")))
+
+;;h
+(defun get-first-char (l)
+  (char-downcase
+   (char (format nil "~A" l) 0)))
+
+;;i
+(defun read-letter nil
+  (let ((letter (read)))
+    (cond ((member letter '(undo end)) letter)
+	  (t (get-first-char letter)))))
+
+;;j
+(defun sub-letter (ch)
+  (let ((deci (gethash ch *decipher-table*)))
+    (cond (deci (format t "But ~A has been deciphered to ~A already!~%" ch deci))
+	  (t (format t "What does ~A decipher to: " ch)
+	     (let* ((letter (read-letter))
+		    (enci (gethash letter *encipher-table*)))
+	       (cond ((not (characterp letter)) (format t "~A is not a letter!~%" letter))
+		     (enci (format t "But ~A already deciphers to ~A!~%" letter enci))
+		     (t (make-substitution ch letter))))))))
+;;k
+(defun undo-letter nil
+  (format t "Undo which letter: ")
+  (let ((letter (read-letter)))
+    (if (gethash letter *decipher-table*)
+	(undo-substitution letter))))
+
+;;l
+(defun solve nil
+  (do ((letter #\Space))
+      ((equal letter 'end) (format t "Until next time!"))
+    (show-text)
+    (format t "Substitute which letter: ")
+    (setf letter (read-letter))
+    (unless (eql letter 'end)
+      (if (eql letter 'undo)
+	  (undo-letter)
+	  (sub-letter letter)))))
+     
 
 (defun import-all nil
   (load "./GISC_Ch_13.lisp")
